@@ -324,7 +324,7 @@ function generatePDF() {
 
     content: [
       {
-        text: "CONTRAT DE TRAVAIL A DUREE\nINDETERMINEE",
+        text: "CONTRAT DE TRAVAIL A DUREE DETERMINEE",
         style: "h1",
         alignment: "center",
       },
