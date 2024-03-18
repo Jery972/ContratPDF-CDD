@@ -145,8 +145,10 @@ function generatePDF() {
   let coefSalary = "....................";
   let levelSalary = "....................";
   let beginDate = "....................";
+  let endDate = "....................";
+  let whyContrat = "........................................";
   let cityUrssaf = "....................";
-  let taskClient = "....................";
+  let taskClient = "";
 
   document.getElementById("nameSalary").value
     ? (nameSalary = document.getElementById("nameSalary").value)
@@ -172,6 +174,12 @@ function generatePDF() {
   document.getElementById("beginDate").value
     ? (beginDate = document.getElementById("beginDate").value)
     : null;
+  document.getElementById("endDate").value
+    ? (endDate = document.getElementById("endDate").value)
+    : null;
+  document.getElementById("whyContrat").value
+    ? (whyContrat = document.getElementById("whyContrat").value)
+    : null;
   document.getElementById("cityUrssaf").value
     ? (cityUrssaf = document.getElementById("cityUrssaf").value)
     : null;
@@ -181,13 +189,9 @@ function generatePDF() {
 
   // ARTICLE 3
   let essaiPeriode = "....................";
-  let maxPeriode = "....................";
 
   document.getElementById("essaiPeriode").value
     ? (essaiPeriode = document.getElementById("essaiPeriode").value)
-    : null;
-  document.getElementById("maxPeriode").value
-    ? (maxPeriode = document.getElementById("maxPeriode").value)
     : null;
 
   // ARTICLE 4
@@ -426,9 +430,12 @@ function generatePDF() {
             ", Niveau " +
             levelSalary +
             ".",
-          "\nLe présent contrat est conclu pour une durée indéterminée et prend effet à compter du " +
+          "\nLe présent contrat est conclu pour une durée déterminée et prend effet à compter du " +
             beginDate +
+            " jusqu'au " +
+            endDate +
             ".\n\n",
+          "Le présent contrat est conclu afin de " + whyContrat + ".\n\n",
           "La déclaration préalable à l'embauche de " +
             isGenre() +
             nameSalary +
@@ -456,9 +463,6 @@ function generatePDF() {
             nameSalary +
             " est de " +
             essaiPeriode +
-            ".\n\n",
-          "Conformément aux dispositions conventionnelles, la période d'essai pourra être prolongée pour une durée maximale de " +
-            maxPeriode +
             ".\n\n",
           "Au cours de la période d'essai, l'Employeur et " +
             isGenre() +
@@ -763,3 +767,33 @@ footer.appendChild(copyrightDiv);
 footer.appendChild(emailDiv);
 
 document.body.appendChild(footer);
+
+// Récupération des éléments HTML
+var mensuelChoosed = document.getElementById("mensuelChoosed");
+var hourChoosed = document.getElementById("hourChoosed");
+var tauxMensuel = document.getElementById("tauxMensuel");
+var tauxHoraire = document.getElementById("tauxHoraire");
+
+// Écouteurs d'événements pour les boutons radio
+tauxMensuel.addEventListener("change", function () {
+  if (this.checked) {
+    mensuelChoosed.style.display = "block";
+    hourChoosed.style.display = "none";
+  }
+});
+
+tauxHoraire.addEventListener("change", function () {
+  if (this.checked) {
+    mensuelChoosed.style.display = "none";
+    hourChoosed.style.display = "block";
+  }
+});
+
+// Initialisation de l'état initial
+if (tauxMensuel.checked) {
+  mensuelChoosed.style.display = "block";
+  hourChoosed.style.display = "none";
+} else if (tauxHoraire.checked) {
+  mensuelChoosed.style.display = "none";
+  hourChoosed.style.display = "block";
+}

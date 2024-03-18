@@ -65,6 +65,18 @@
         justify-content: center;
         flex-direction: column;
       }
+      #remunerationChoose {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+      }
+      #remunerationChoose div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
       #sejourDiv {
         display: flex;
         align-items: center;
@@ -73,6 +85,9 @@
         border: 3px solid yellow;
         margin-block: 1rem;
         padding: 0rem 1rem 1rem 1rem;
+      }
+      #hourChoosed {
+        display: none;
       }
     </style>
   </head>
@@ -209,12 +224,6 @@
         semaines):</label
       >
       <input type="text" id="essaiPeriode" name="essaiPeriode" />
-      <label for="maxPeriode"
-        >Conformément aux dispositions conventionnelles, la période d'essai
-        pourra être prolongée pour une durée maximale de ( (a rajouter si la
-        convention collective prévoit un renouvellement) ):</label
-      >
-      <input type="text" id="maxPeriode" name="maxPeriode" />
 
       <h2>ARTICLE 4. LIEU DE TRAVAIL</h2>
 
@@ -240,11 +249,39 @@
 
       <h2>ARTICLE 6. RÉMUNÉRATION</h2>
 
-      <label for="moneyMonth"
-        >Rémunération mensuelle : ( vérifier l’adéquation entre le coefficient
-        hiérarchique et les minima conventionnels )</label
-      >
-      <input type="text" id="moneyMonth" name="moneyMonth" />
+      <p>
+        <br />Vérifier l'adéquation entre le coefficient hiérarchique et les
+        minima conventionnels
+      </p>
+
+      <div id="remunerationChoose">
+        <div>
+          <label for="tauxMensuel">Mensuelle</label>
+          <input
+            type="radio"
+            id="tauxMensuel"
+            name="tauxRemu"
+            value="0"
+            checked
+          />
+        </div>
+        <div>
+          <label for="tauxHoraire">Horaire</label>
+          <input type="radio" id="tauxHoraire" name="tauxRemu" value="1" />
+        </div>
+      </div>
+
+      <div id="mensuelChoosed">
+        <br />
+        <label for="moneyMonth">Rémunération mensuelle :</label>
+        <input type="text" id="moneyMonth" name="moneyMonth" />
+      </div>
+
+      <div id="hourChoosed">
+        <br />
+        <label for="moneyHour">Rémunération horaire brut :</label>
+        <input type="text" id="moneyHour" name="moneyHour" />
+      </div>
 
       <h2>ARTICLE 9. PROTECTION SOCIALE</h2>
 
