@@ -1,3 +1,33 @@
+// Récupération des éléments HTML
+var mensuelChoosed = document.getElementById("mensuelChoosed");
+var hourChoosed = document.getElementById("hourChoosed");
+var tauxMensuel = document.getElementById("tauxMensuel");
+var tauxHoraire = document.getElementById("tauxHoraire");
+
+// Écouteurs d'événements pour les boutons radio
+tauxMensuel.addEventListener("change", function () {
+  if (this.checked) {
+    mensuelChoosed.style.display = "block";
+    hourChoosed.style.display = "none";
+  }
+});
+
+tauxHoraire.addEventListener("change", function () {
+  if (this.checked) {
+    mensuelChoosed.style.display = "none";
+    hourChoosed.style.display = "block";
+  }
+});
+
+// Initialisation de l'état initial
+if (tauxMensuel.checked) {
+  mensuelChoosed.style.display = "block";
+  hourChoosed.style.display = "none";
+} else if (tauxHoraire.checked) {
+  mensuelChoosed.style.display = "none";
+  hourChoosed.style.display = "block";
+}
+
 function generatePDF() {
   //EMPLOYEUR
   let societeValue = "....................";
@@ -222,9 +252,22 @@ function generatePDF() {
 
   // ARTICLE 6
   let moneyMonth = "....................";
+  let moneyHour = "....................";
+  let tauxRemu = 0;
+
+  let boutonTaux = document.querySelectorAll('input[name="tauxRemu"]');
+
+  boutonTaux.forEach(function (bouton) {
+    if (bouton.checked) {
+      tauxRemu = bouton.value;
+    }
+  });
 
   document.getElementById("moneyMonth").value
     ? (moneyMonth = document.getElementById("moneyMonth").value)
+    : null;
+  document.getElementById("moneyMonth").value
+    ? (moneyHour = document.getElementById("moneyHour").value)
     : null;
 
   // ARTICLE 9
@@ -262,6 +305,8 @@ function generatePDF() {
       return line1 + line2 + line3;
     }
   }
+
+  let cumulCheck = document.getElementById("cumul");
 
   // FIN CONTRAT
   let lieuContrat = "....................";
@@ -307,6 +352,9 @@ function generatePDF() {
       footer2: {
         fontSize: 10,
         italics: true,
+      },
+      ul: {
+        margin: [10, 0, 0, 0],
       },
     },
     pageMargins: [55, 40, 55, 80],
@@ -544,20 +592,31 @@ function generatePDF() {
         text: "ARTICLE 6. RÉMUNÉRATION",
         style: "h3",
       },
+
       {
-        text: [
-          "En contrepartie de l'accomplissement de ses missions, ",
-          isGenre() +
-            nameSalary +
-            " percevra une rémunération mensuelle de " +
-            moneyMonth +
-            "€ pour " +
-            hourMonth +
-            "h.\n",
-          hourMonth == "169"
-            ? "La rémunération indiquée prend en compte les heures supplémentaires mensualisées.\n\n"
-            : null,
-        ],
+        text:
+          tauxRemu == 0
+            ? [
+                "En contrepartie de l'accomplissement de ses missions, ",
+                isGenre() +
+                  nameSalary +
+                  " percevra une rémunération mensuelle de " +
+                  moneyMonth +
+                  "€ pour " +
+                  hourMonth +
+                  "h.\n",
+                hourMonth == "169"
+                  ? "La rémunération indiquée prend en compte les heures supplémentaires mensualisées.\n\n"
+                  : null,
+              ]
+            : [
+                "En contrepartie de l'accomplissement de ses missions, ",
+                isGenre() +
+                  nameSalary +
+                  " percevra une rémunération horaire de " +
+                  moneyHour +
+                  "€ brut.",
+              ],
         style: "p2",
       },
       {
@@ -613,6 +672,7 @@ function generatePDF() {
           orgaOthers2 ? orgaOthers2 : null,
           orgaOthers3 ? orgaOthers3 : null,
         ],
+        style: "ul",
       },
       {
         text: "ARTICLE 10. ABSENCES",
@@ -638,12 +698,28 @@ function generatePDF() {
       },
       {
         text: [
-          "A l'issue de la période d'essai, le présent contrat se poursuivra pour une durée indéterminée. Toutefois l'Employeur ainsi que ",
-          isGenre() +
-            nameSalary +
-            ", séparément ou d'un commun accord, peuvent mettre fin au présent contrat, conformément aux dispositions légales et conventionnelles applicables à l'entreprise.",
+          "A l'issue de la période d'essai, le présent contrat se poursuivra automatiquement jusqu'à la date de fin du présent contrat. La rupture anticipée du présent contrat pourra intervenir dans plusieurs cas :",
         ],
         style: "p2",
+      },
+      {
+        ul: [
+          "Rupture d'un commun accord entre l'Employeur et " +
+            isGenre() +
+            nameSalary +
+            ".",
+          "A la demande de " +
+            isGenre() +
+            nameSalary +
+            " en cas d'embauche en contrat à durée indéterminée",
+          "Faute grave",
+          "Force majeure",
+          "Inaptitude de " +
+            isGenre() +
+            nameSalary +
+            " constatée par la médecine du travail",
+        ],
+        style: "ul",
       },
       {
         text: "ARTICLE 12. DISCRÉTION ET LOYAUTÉ",
@@ -720,12 +796,58 @@ function generatePDF() {
             nameSalary +
             " bénéficiera tous les deux (2) ans d'un entretien professionnel avec l'Employeur conformément à l'article L. 6315-1 du Code du travail.\n\n",
           demarcheSejour(),
-          "Enfin, le salarié déclare être libre de tout engagement et n'être lié(e) par aucune clause de non-concurrence à un autre employeur.\n\n\n\n\n\n",
-          "Fait en double exemplaire,\n\n",
+          cumulCheck.checked
+            ? ""
+            : "Enfin, le salarié déclare être libre de tout engagement et n'être lié(e) par aucune clause de non-concurrence à un autre employeur.",
+        ],
+        style: "p2",
+      },
+      cumulCheck.checked
+        ? {
+            text: "ARTICLE 15.1. CUMUL D'ACTIVITÉ",
+            style: "h3",
+          }
+        : null,
+      cumulCheck.checked
+        ? {
+            text: [
+              isGenre() +
+                nameSalary +
+                " pourra exercer une autre activité professionnelle que celle objet du présent contrat. Cette possibilité s'applique :",
+            ],
+            style: "p2",
+          }
+        : null,
+      cumulCheck.checked
+        ? {
+            ul: [
+              "Sous réserve qu'elle soit compatible avec l'exercice de ses fonctions au sein de la Société",
+            ],
+            style: "ul",
+          }
+        : null,
+      cumulCheck.checked
+        ? {
+            text: ["ET"],
+            style: "p2",
+          }
+        : null,
+      cumulCheck.checked
+        ? {
+            ul: [
+              "Sous réserve du respect de la durée maximale et légale du temps de travail",
+            ],
+            style: "ul",
+          }
+        : null,
+      {
+        text: [
+          "\n\n\n\n\n\nFait en double exemplaire,\n\n",
           "À " + lieuContrat + ", le " + dateContrat + "\n\n\n",
         ],
         style: "p2",
       },
+
       {
         columns: [
           {
@@ -767,33 +889,3 @@ footer.appendChild(copyrightDiv);
 footer.appendChild(emailDiv);
 
 document.body.appendChild(footer);
-
-// Récupération des éléments HTML
-var mensuelChoosed = document.getElementById("mensuelChoosed");
-var hourChoosed = document.getElementById("hourChoosed");
-var tauxMensuel = document.getElementById("tauxMensuel");
-var tauxHoraire = document.getElementById("tauxHoraire");
-
-// Écouteurs d'événements pour les boutons radio
-tauxMensuel.addEventListener("change", function () {
-  if (this.checked) {
-    mensuelChoosed.style.display = "block";
-    hourChoosed.style.display = "none";
-  }
-});
-
-tauxHoraire.addEventListener("change", function () {
-  if (this.checked) {
-    mensuelChoosed.style.display = "none";
-    hourChoosed.style.display = "block";
-  }
-});
-
-// Initialisation de l'état initial
-if (tauxMensuel.checked) {
-  mensuelChoosed.style.display = "block";
-  hourChoosed.style.display = "none";
-} else if (tauxHoraire.checked) {
-  mensuelChoosed.style.display = "none";
-  hourChoosed.style.display = "block";
-}
